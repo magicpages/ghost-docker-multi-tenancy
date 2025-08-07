@@ -60,8 +60,6 @@ services:
     restart: unless-stopped
     ports:
       - "${TINYBIRD_PORT:-7181}:7181"
-    environment:
-      - COMPATIBILITY_MODE=1
     networks:
       - ghost_network
     healthcheck:
