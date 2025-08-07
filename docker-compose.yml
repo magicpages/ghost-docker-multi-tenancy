@@ -43,7 +43,7 @@ services:
 
   # Multi-tenant ActivityPub
   activitypub:
-    image: ghcr.io/tryghost/activitypub:latest
+    image: ghcr.io/tryghost/activitypub:1.0.1
     restart: unless-stopped
     environment:
       DATABASE_URL: mysql://root:${MYSQL_ROOT_PASSWORD}@mysql:3306/activitypub_db
