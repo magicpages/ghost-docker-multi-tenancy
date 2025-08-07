@@ -80,9 +80,11 @@ else
 fi
 
 # Deploy Ghost's Tinybird schema
-echo "📊 Deploying Ghost's Tinybird schema..."
-docker compose -f docker-compose.setup.yml run --rm tinybird-sync
-docker compose -f docker-compose.setup.yml run --rm tinybird-deploy
+echo "📊 Extracting Tinybird files from Ghost..."
+docker compose -f docker-compose.setup.yml --profile setup run --rm tinybird-sync
+
+echo "📊 Deploying Tinybird project..."
+docker compose -f docker-compose.setup.yml --profile setup run --rm tinybird-deploy
 
 echo "📦 Starting Traffic Analytics service..."
 docker compose up -d traffic-analytics

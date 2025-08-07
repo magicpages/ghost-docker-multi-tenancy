@@ -7,6 +7,7 @@ services:
   # Extract Tinybird files from Ghost image
   tinybird-sync:
     image: ghost:6-alpine
+    profiles: ["setup"]
     volumes:
       - tinybird_files:/data/tinybird
     command: >
@@ -26,6 +27,7 @@ services:
   # Deploy Tinybird project to local instance
   tinybird-deploy:
     image: python:3.9-slim
+    profiles: ["setup"]
     volumes:
       - tinybird_files:/data/tinybird
       - ./tb-home:/root/.tinybird
