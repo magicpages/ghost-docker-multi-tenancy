@@ -43,10 +43,10 @@ services:
           echo 'ERROR: Token is empty or null, cannot authenticate' &&
           exit 1;
         fi &&
-        echo 'Pushing Tinybird project using Local tb CLI...' &&
+        echo 'Deploying Tinybird project using Local tb CLI...' &&
         export TB_TOKEN=$$TOKEN &&
         export TB_HOST=http://tinybird-local:7181 &&
-        tb push --force
+        tb deploy --force
       "
     networks:
       - ghost_network
