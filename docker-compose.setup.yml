@@ -41,7 +41,7 @@ services:
         echo 'Raw response:' &&
         curl -s http://tinybird-local:7181/tokens &&
         echo '' &&
-        TOKEN=$$(curl -s http://tinybird-local:7181/tokens | grep -o '\"workspace_admin_token\":\"[^\"]*\"' | cut -d'\"' -f4) &&
+        TOKEN=$$(curl -s http://tinybird-local:7181/tokens | sed -n 's/.*\"workspace_admin_token\": \"\\([^\"]*\\)\".*/\\1/p') &&
         echo 'Extracted token:' $$TOKEN &&
         echo 'Token length:' $$(echo $$TOKEN | wc -c) &&
         if [ -z \"$$TOKEN\" ]; then
