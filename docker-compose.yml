@@ -58,6 +58,8 @@ services:
     image: tinybirdco/tinybird-local:latest
     platform: linux/amd64
     restart: unless-stopped
+    environment:
+      - COMPATIBILITY_MODE=1
     ports:
       - "${TINYBIRD_PORT:-7181}:7181"
     networks:
@@ -93,9 +95,6 @@ services:
 networks:
   ghost_network:
     driver: bridge
-    ipam:
-      config:
-        - subnet: 172.20.0.0/16
 
 volumes:
   mysql_data:

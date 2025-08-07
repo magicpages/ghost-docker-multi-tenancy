@@ -36,23 +36,19 @@ services:
       - TB_HOST=http://tinybird-local:7181
     command: >
       sh -c "
-        apt-get update && apt-get install -y curl &&
+        apt-get update && apt-get install -y curl jq &&
         pip install tinybird-cli &&
         cd /data/tinybird &&
         echo 'Getting admin token from Tinybird Local...' &&
-        echo 'Raw response:' &&
-        curl -s http://tinybird-local:7181/tokens &&
-        echo '' &&
-        TOKEN=$$(curl -s http://tinybird-local:7181/tokens | sed -n 's/.*\"workspace_admin_token\": \"\\([^\"]*\\)\".*/\\1/p') &&
+        TOKEN=$$(curl -s http://tinybird-local:7181/tokens | jq -r .workspace_admin_token) &&
         echo 'Extracted token:' $$TOKEN &&
-        echo 'Token length:' $$(echo $$TOKEN | wc -c) &&
-        if [ -z \"$$TOKEN\" ]; then
-          echo 'ERROR: Token is empty, cannot authenticate' &&
+        if [ -z \"$$TOKEN\" ] || [ \"$$TOKEN\" = \"null\" ]; then
+          echo 'ERROR: Token is empty or null, cannot authenticate' &&
           exit 1;
         fi &&
-        echo 'Authenticating with Tinybird Local...' &&
-        tb auth --host http://tinybird-local:7181 --token $$TOKEN &&
         echo 'Pushing Tinybird project...' &&
+        export TB_TOKEN=$$TOKEN &&
+        export TB_HOST=http://tinybird-local:7181 &&
         tb push --force
       "
     networks:
@@ -63,7 +59,7 @@ services:
 networks:
   ghost_network:
     external: true
-    name: ghost_ghost_network
+    name: ghost_network
 
 volumes:
   tinybird_files:
