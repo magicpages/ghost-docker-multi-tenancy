@@ -39,7 +39,7 @@ echo "✅ Tinybird Local is ready"
 # Get or generate admin token
 if [ -z "$TINYBIRD_ADMIN_TOKEN" ] || [ "$TINYBIRD_ADMIN_TOKEN" = "your_tinybird_admin_token_here" ]; then
     echo "🔑 Generating Tinybird admin token..."
-    ADMIN_TOKEN=$(curl -s http://localhost:${TINYBIRD_PORT:-7181}/tokens | jq -r ".workspace_admin_token")
+    ADMIN_TOKEN=$(curl -s http://localhost:${TINYBIRD_PORT:-7181}/tokens | grep -o '"workspace_admin_token":"[^"]*"' | cut -d'"' -f4)
     
     # Update .env file
     if grep -q "^TINYBIRD_ADMIN_TOKEN=" .env; then
@@ -64,7 +64,7 @@ if [ -z "$TINYBIRD_TRACKER_TOKEN" ] || [ "$TINYBIRD_TRACKER_TOKEN" = "your_tinyb
         -H "Content-Type: application/json" \
         -H "Authorization: Bearer $ADMIN_TOKEN" \
         -d '{"name":"traffic-analytics","scopes":[{"resource":"events","action":"append"}]}' \
-        http://localhost:${TINYBIRD_PORT:-7181}/tokens | jq -r ".token")
+        http://localhost:${TINYBIRD_PORT:-7181}/tokens | grep -o '"token":"[^"]*"' | cut -d'"' -f4)
     
     # Update .env file
     if grep -q "^TINYBIRD_TRACKER_TOKEN=" .env; then
