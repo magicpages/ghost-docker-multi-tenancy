@@ -48,8 +48,21 @@ services:
     image: ghcr.io/tryghost/activitypub:1.0.1
     container_name: activitypub
     restart: unless-stopped
+    ports:
+      - "8080:8080"
+    volumes:
+      - activitypub_content:/opt/activitypub/content
     environment:
-      DATABASE_URL: mysql://root:${MYSQL_ROOT_PASSWORD}@mysql:3306/activitypub_db
+      NODE_ENV: production
+      PORT: 8080
+      MYSQL_HOST: mysql
+      MYSQL_USER: root
+      MYSQL_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: activitypub_db
+      ALLOW_PRIVATE_ADDRESS: true
+      USE_MQ: false
+      LOCAL_STORAGE_PATH: /opt/activitypub/content/images/activitypub
+      LOCAL_STORAGE_HOSTING_URL: /content/images/activitypub
     networks:
       - ghost_network
     depends_on:
@@ -106,7 +119,7 @@ volumes:
   caddy_data:
   caddy_config:
   traffic_analytics_data:
-  activitypub_config:
+  activitypub_content:
 
 # Individual Ghost sites are defined in separate compose files:
 # docker-compose.yoursite.yml
