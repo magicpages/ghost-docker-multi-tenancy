@@ -37,7 +37,7 @@ services:
       sh -c "
         cd /data/tinybird &&
         echo 'Getting admin token from Tinybird Local...' &&
-        TOKEN=$$(curl -s http://tinybird-local:7181/tokens | jq -r .workspace_admin_token) &&
+        TOKEN=$$(curl -s http://tinybird-local:7181/tokens | python -c 'import json,sys;print(json.load(sys.stdin)[\"workspace_admin_token\"])') &&
         echo 'Extracted token:' $$TOKEN &&
         if [ -z \"$$TOKEN\" ] || [ \"$$TOKEN\" = \"null\" ]; then
           echo 'ERROR: Token is empty or null, cannot authenticate' &&
