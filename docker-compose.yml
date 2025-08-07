@@ -7,6 +7,7 @@ services:
   # Shared MySQL Database
   mysql:
     image: mysql:8.0.42
+    container_name: mysql
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
@@ -29,6 +30,7 @@ services:
   # Caddy Reverse Proxy with auto-SSL
   caddy:
     image: caddy:2.10.0-alpine
+    container_name: caddy
     restart: unless-stopped
     ports:
       - "80:80"
@@ -44,6 +46,7 @@ services:
   # Multi-tenant ActivityPub
   activitypub:
     image: ghcr.io/tryghost/activitypub:1.0.1
+    container_name: activitypub
     restart: unless-stopped
     environment:
       DATABASE_URL: mysql://root:${MYSQL_ROOT_PASSWORD}@mysql:3306/activitypub_db
@@ -56,6 +59,7 @@ services:
   # Tinybird Local for Analytics
   tinybird-local:
     image: tinybirdco/tinybird-local:latest
+    container_name: tinybird-local
     platform: linux/amd64
     restart: unless-stopped
     environment:
@@ -74,6 +78,7 @@ services:
   # Ghost Traffic Analytics Service
   traffic-analytics:
     image: ghost/traffic-analytics:1.0.1
+    container_name: traffic-analytics
     restart: unless-stopped
     ports:
       - "${TRAFFIC_ANALYTICS_PORT:-3001}:3000"
