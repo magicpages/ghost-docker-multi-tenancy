@@ -1,0 +1,75 @@
+# Caddy Configuration for Ghost Multi-Tenant Setup
+# Automatically handles SSL certificates and routing
+
+# Example site - replace with your actual domains
+example.com {
+    # Main Ghost site
+    reverse_proxy ghost_example_com:2368
+    
+    # ActivityPub endpoints
+    handle /.well-known/webfinger {
+        reverse_proxy activitypub:3000
+    }
+    
+    handle /activitypub/* {
+        reverse_proxy activitypub:3000
+    }
+    
+    # Security headers
+    header {
+        # Enable HSTS
+        Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+        # Prevent clickjacking
+        X-Frame-Options "SAMEORIGIN"
+        # Prevent content type sniffing
+        X-Content-Type-Options "nosniff"
+        # XSS Protection
+        X-XSS-Protection "1; mode=block"
+        # Referrer Policy
+        Referrer-Policy "strict-origin-when-cross-origin"
+    }
+}
+
+# www redirect - choose ONE of the following patterns:
+
+# Option 1: www -> non-www redirect (recommended)
+# www.example.com {
+#     redir https://example.com{uri} permanent
+# }
+
+# Option 2: non-www -> www redirect  
+# example.com {
+#     redir https://www.example.com{uri} permanent
+# }
+
+# Add more sites by copying the block above
+# Replace 'example.com' with your domain and 'ghost_example_com' with your service name
+
+# Template for additional sites:
+# yourdomain.com {
+#     reverse_proxy ghost_yourdomain_com:2368
+#     
+#     handle /.well-known/webfinger {
+#         reverse_proxy activitypub:3000
+#     }
+#     
+#     handle /activitypub/* {
+#         reverse_proxy activitypub:3000
+#     }
+#     
+#     header {
+#         Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+#         X-Frame-Options "SAMEORIGIN"
+#         X-Content-Type-Options "nosniff"
+#         X-XSS-Protection "1; mode=block"
+#         Referrer-Policy "strict-origin-when-cross-origin"
+#     }
+# }
+
+# Optional: Wildcard subdomain routing (advanced)
+# *.yourdomain.com {
+#     @subdomain {
+#         host_regexp ^([^.]+)\.yourdomain\.com$
+#     }
+#     reverse_proxy @subdomain ghost_{re.subdomain.1}:2368
+# }

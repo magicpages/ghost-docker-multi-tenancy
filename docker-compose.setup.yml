@@ -1,0 +1,53 @@
+version: '3.8'
+
+# Tinybird Setup Services
+# Run once to initialize Tinybird with Ghost schema
+
+services:
+  # Extract Tinybird files from Ghost image
+  tinybird-sync:
+    image: ghost:6-alpine
+    volumes:
+      - tinybird_files:/data/tinybird
+    command: >
+      sh -c "
+        if [ -d /var/lib/ghost/versions/*/core/server/data/tinybird ]; then
+          echo 'Copying Tinybird files from Ghost container...';
+          cp -r /var/lib/ghost/versions/*/core/server/data/tinybird/* /data/tinybird/;
+          echo 'Tinybird files copied successfully!';
+        else
+          echo 'ERROR: Tinybird source directory not found';
+          exit 1;
+        fi
+      "
+    networks:
+      - ghost_network
+
+  # Deploy Tinybird project to local instance
+  tinybird-deploy:
+    image: python:3.9-slim
+    volumes:
+      - tinybird_files:/data/tinybird
+      - ./tb-home:/root/.tinybird
+    environment:
+      - TB_TOKEN=${TINYBIRD_ADMIN_TOKEN}
+      - TB_HOST=http://tinybird-local:7181
+    command: >
+      sh -c "
+        pip install tinybird-cli &&
+        cd /data/tinybird &&
+        tb auth --token $${TB_TOKEN} --host $${TB_HOST} &&
+        tb push --force
+      "
+    networks:
+      - ghost_network
+    depends_on:
+      - tinybird-sync
+
+networks:
+  ghost_network:
+    external: true
+    name: ghost-docker-multitenancy_ghost_network
+
+volumes:
+  tinybird_files:

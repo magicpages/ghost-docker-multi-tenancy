@@ -1,0 +1,165 @@
+# Ghost Docker Multi-Tenancy - .gitignore
+
+# Environment and secrets
+.env
+.env.local
+.env.*.local
+
+# Claude AI assistant files
+.claude/
+
+# Docker volumes and data
+/data/
+/volumes/
+/storage/
+
+# Tinybird setup files
+tb-home/
+tinybird_files/
+
+# MySQL initialization temp files
+mysql-init/*.tmp
+mysql-init/*.log
+
+# SSL certificates and keys
+*.pem
+*.key
+*.crt
+*.cert
+
+# Caddy data (handled by volumes)
+caddy_data/
+caddy_config/
+
+# Log files
+*.log
+logs/
+/var/log/
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE and editor files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Node.js (if any scripts use Node)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Python (for Tinybird CLI)
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Backup files
+*.backup
+*.bak
+*.sql.gz
+*.tar.gz
+backup/
+backups/
+
+# Ghost content backups
+*-content-*.tar.gz
+*-content-backup/
+
+# Docker build context files
+.dockerignore
+
+# Compose override files (except template)
+docker-compose.override.yml
+
+# Site-specific compose files pattern (uncomment if you want to ignore them)
+# docker-compose.*.yml
+# !docker-compose.example-com.yml
+
+# Runtime files
+*.pid
+*.sock
+
+# Coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# pipenv
+Pipfile.lock
+
+# PEP 582
+__pypackages__/
+
+# Celery stuff
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath parsed files
+*.sage.py
+
+# Environments
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Local configuration files
+config.local.*
+*.local.yml
+*.local.yaml
+
+# Ansible vault files (if using Ansible for deployment)
+vault.yml
+.vault_pass.txt

@@ -1,0 +1,67 @@
+version: '3.8'
+
+# Ghost Site Template
+# Copy this file to docker-compose.yoursite.yml and customize
+
+services:
+  ghost_SITENAME:
+    image: ghost:6-alpine
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      url: https://DOMAIN
+      
+      # Database configuration
+      database__client: mysql
+      database__connection__host: mysql
+      database__connection__user: SITENAME
+      database__connection__password: ${MYSQL_PASSWORD}
+      database__connection__database: SITENAME_db
+      
+      # ActivityPub integration
+      activitypub__enabled: true
+      activitypub__endpoint: http://activitypub:3000
+      
+      # Tinybird Local analytics
+      tinybird__adminToken: ${TINYBIRD_ADMIN_TOKEN}
+      tinybird__workspaceId: default
+      tinybird__stats__endpoint: http://tinybird-local:7181
+      
+      # Email configuration (optional)
+      mail__transport: ${MAIL_TRANSPORT:-}
+      mail__options__host: ${MAIL_HOST:-}
+      mail__options__port: ${MAIL_PORT:-}
+      mail__options__secure: ${MAIL_SECURE:-}
+      mail__options__auth__user: ${MAIL_USER:-}
+      mail__options__auth__pass: ${MAIL_PASSWORD:-}
+      
+    volumes:
+      - ghost_SITENAME_content:/var/lib/ghost/content
+    networks:
+      - ghost_network
+    depends_on:
+      mysql:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:2368/ghost/api/admin/site/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 256M
+    labels:
+      - "ghost.site=DOMAIN"
+      - "ghost.service=SITENAME"
+
+networks:
+  ghost_network:
+    external: true
+    name: ghost-docker-multitenancy_ghost_network
+
+volumes:
+  ghost_SITENAME_content:
