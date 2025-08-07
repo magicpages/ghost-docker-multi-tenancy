@@ -47,7 +47,7 @@ services:
 networks:
   ghost_network:
     external: true
-    name: ghost-docker-multitenancy_ghost_network
+    name: ghost_ghost_network
 
 volumes:
   tinybird_files:
