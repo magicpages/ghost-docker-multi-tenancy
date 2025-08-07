@@ -12,10 +12,10 @@ fi
 
 DOMAIN="$1"
 
-# Validate domain format (basic check)
-if [[ ! "$DOMAIN" =~ ^[a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]*\.[a-zA-Z]{2,}$ ]]; then
+# Validate domain format (allows subdomains)
+if [[ ! "$DOMAIN" =~ ^[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*\.[a-zA-Z]{2,}$ ]]; then
     echo "❌ Invalid domain format: $DOMAIN"
-    echo "   Please use format: example.com"
+    echo "   Please use format: example.com or subdomain.example.com"
     exit 1
 fi
 
