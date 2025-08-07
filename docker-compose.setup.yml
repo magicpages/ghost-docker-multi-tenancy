@@ -15,16 +15,7 @@ services:
         if [ -d /var/lib/ghost/versions/*/core/server/data/tinybird ]; then
           echo 'Copying Tinybird files from Ghost container...';
           cp -r /var/lib/ghost/versions/*/core/server/data/tinybird/* /data/tinybird/;
-          echo 'Adapting schema for Tinybird Local (removing FORWARD_QUERY sections)...';
-          # Remove FORWARD_QUERY sections which only work in Tinybird Cloud
-          for file in /data/tinybird/datasources/*.datasource; do
-            if [ -f \"\$file\" ]; then
-              sed -i '/^FORWARD_QUERY/,\$d' \"\$file\";
-              # Remove trailing empty lines
-              sed -i -e :a -e '/^\s*\$/d;N;ba' \"\$file\";
-            fi
-          done;
-          echo 'Tinybird files adapted for Local mode!';
+          echo 'Tinybird files copied successfully!';
         else
           echo 'ERROR: Tinybird source directory not found';
           exit 1;
