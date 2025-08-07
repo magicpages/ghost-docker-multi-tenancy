@@ -84,6 +84,25 @@ echo ""
 echo "🏠 Found $SITE_COUNT Ghost site(s):"
 echo "$SITE_FILES" | sed 's|./docker-compose.||' | sed 's|.yml||' | sed 's/^/   - /'
 
+# Create databases for each site
+echo ""
+echo "🗄️  Creating databases for sites..."
+for file in $SITE_FILES; do
+    # Extract site name from filename (e.g., docker-compose.site1.yml -> site1)
+    SITE_NAME=$(basename "$file" | sed 's/docker-compose\.//' | sed 's/\.yml//')
+    # Convert dots and dashes to underscores for database name
+    DB_NAME=$(echo "$SITE_NAME" | sed 's/\./_/g' | sed 's/-/_/g')_db
+    DB_USER=$(echo "$SITE_NAME" | sed 's/\./_/g' | sed 's/-/_/g')
+    
+    echo "   Creating database for $SITE_NAME..."
+    docker compose exec -T mysql mysql -uroot -p${MYSQL_ROOT_PASSWORD} -e "
+        CREATE DATABASE IF NOT EXISTS ${DB_NAME};
+        CREATE USER IF NOT EXISTS '${DB_USER}'@'%' IDENTIFIED BY '${MYSQL_PASSWORD}';
+        GRANT ALL PRIVILEGES ON ${DB_NAME}.* TO '${DB_USER}'@'%';
+        FLUSH PRIVILEGES;
+    " 2>/dev/null || true
+done
+
 # Start Ghost sites
 echo ""
 echo "🚀 Starting Ghost sites..."

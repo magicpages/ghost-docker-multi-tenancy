@@ -59,7 +59,7 @@ services:
 networks:
   ghost_network:
     external: true
-    name: ghost_network
+    name: ${COMPOSE_PROJECT_NAME:-ghost}_ghost_network
 
 volumes:
   tinybird_files:

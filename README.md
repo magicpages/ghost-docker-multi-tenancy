@@ -117,13 +117,13 @@ MAIL_PASSWORD=your_password
 ## Management Commands
 
 ```bash
-# Deploy all sites
+# Deploy infrastructure and all sites (creates databases automatically)
 ./scripts/deploy.sh
 
-# Setup Tinybird Local (run once)
+# Setup Tinybird Local (called automatically by deploy.sh)
 ./scripts/setup-tinybird.sh
 
-# Create new site
+# Create new site configuration
 ./scripts/new-site.sh newdomain.com
 
 # View all services
