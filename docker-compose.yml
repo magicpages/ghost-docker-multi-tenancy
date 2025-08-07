@@ -67,14 +67,12 @@ services:
       mysql:
         condition: service_healthy
 
-  # Tinybird Local for Analytics
+  # Tinybird Local for Analytics (Forward mode for Ghost 6 compatibility)
   tinybird-local:
     image: tinybirdco/tinybird-local:latest
     container_name: tinybird-local
     platform: linux/amd64
     restart: unless-stopped
-    environment:
-      - COMPATIBILITY_MODE=1
     ports:
       - "${TINYBIRD_PORT:-7181}:7181"
     networks:
