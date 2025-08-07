@@ -36,7 +36,9 @@ services:
       sh -c "
         pip install tinybird-cli &&
         cd /data/tinybird &&
-        tb auth --host $${TB_HOST} --token $${TB_TOKEN} &&
+        echo 'Authenticating with Tinybird Local...' &&
+        tb auth --host $$TB_HOST --token $$TB_TOKEN &&
+        echo 'Pushing Tinybird project...' &&
         tb push --force
       "
     networks:
