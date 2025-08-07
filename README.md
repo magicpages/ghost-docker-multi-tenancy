@@ -97,7 +97,7 @@ If you prefer to create sites manually:
 Configure these in `.env`:
 
 ```bash
-# Database
+# Database (MySQL runs internally - no port exposed to avoid conflicts)
 MYSQL_ROOT_PASSWORD=your_secure_root_password
 MYSQL_PASSWORD=your_ghost_password
 
@@ -185,6 +185,10 @@ docker compose logs ghost_yoursite_com
 ```bash
 docker compose exec mysql mysql -u root -p -e "SHOW DATABASES;"
 ```
+
+**Port conflicts?**
+- MySQL runs internally only (no exposed port) to avoid conflicts with existing MySQL installations
+- If you need external MySQL access, add `ports: ["3306:3306"]` to the mysql service in docker-compose.yml
 
 **SSL certificate issues?**
 ```bash
