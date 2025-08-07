@@ -62,7 +62,7 @@ services:
       ALLOW_PRIVATE_ADDRESS: true
       USE_MQ: false
       LOCAL_STORAGE_PATH: /opt/activitypub/content/images/activitypub
-      LOCAL_STORAGE_HOSTING_URL: /content/images/activitypub
+      LOCAL_STORAGE_HOSTING_URL: http://activitypub:8080/content/images/activitypub
     networks:
       - ghost_network
     depends_on:
