@@ -34,10 +34,13 @@ services:
       - TB_HOST=http://tinybird-local:7181
     command: >
       sh -c "
+        apt-get update && apt-get install -y curl &&
         pip install tinybird-cli &&
         cd /data/tinybird &&
+        echo 'Getting admin token from Tinybird Local...' &&
+        TOKEN=$$(curl -s http://tinybird-local:7181/tokens | grep -o '\"workspace_admin_token\":\"[^\"]*\"' | cut -d'\"' -f4) &&
         echo 'Authenticating with Tinybird Local...' &&
-        tb auth --host $$TB_HOST --token $$TB_TOKEN &&
+        tb auth --host http://tinybird-local:7181 --token $$TOKEN &&
         echo 'Pushing Tinybird project...' &&
         tb push --force
       "
