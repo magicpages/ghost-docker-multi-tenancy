@@ -38,7 +38,16 @@ services:
         pip install tinybird-cli &&
         cd /data/tinybird &&
         echo 'Getting admin token from Tinybird Local...' &&
+        echo 'Raw response:' &&
+        curl -s http://tinybird-local:7181/tokens &&
+        echo '' &&
         TOKEN=$$(curl -s http://tinybird-local:7181/tokens | grep -o '\"workspace_admin_token\":\"[^\"]*\"' | cut -d'\"' -f4) &&
+        echo 'Extracted token:' $$TOKEN &&
+        echo 'Token length:' $$(echo $$TOKEN | wc -c) &&
+        if [ -z \"$$TOKEN\" ]; then
+          echo 'ERROR: Token is empty, cannot authenticate' &&
+          exit 1;
+        fi &&
         echo 'Authenticating with Tinybird Local...' &&
         tb auth --host http://tinybird-local:7181 --token $$TOKEN &&
         echo 'Pushing Tinybird project...' &&
