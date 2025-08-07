@@ -108,6 +108,9 @@ docker-compose.override.yml
 # docker-compose.*.yml
 # !docker-compose.example-com.yml
 
+# But keep these core setup files
+!docker-compose.setup.yml
+
 # Runtime files
 *.pid
 *.sock

@@ -80,7 +80,7 @@ else
 fi
 
 # Deploy Ghost's Tinybird schema
-echo "📊 Extracting Tinybird files from Ghost..."
+echo "📊 Extracting and adapting Tinybird files from Ghost..."
 docker compose -f docker-compose.setup.yml --profile setup run --rm tinybird-sync
 
 echo "📊 Deploying Tinybird project..."

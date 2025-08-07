@@ -4,7 +4,7 @@ version: '3.8'
 # Run once to initialize Tinybird with Ghost schema
 
 services:
-  # Extract Tinybird files from Ghost image
+  # Extract Tinybird files from Ghost image and adapt for Tinybird Local
   tinybird-sync:
     image: ghost:6-alpine
     profiles: ["setup"]
@@ -15,7 +15,16 @@ services:
         if [ -d /var/lib/ghost/versions/*/core/server/data/tinybird ]; then
           echo 'Copying Tinybird files from Ghost container...';
           cp -r /var/lib/ghost/versions/*/core/server/data/tinybird/* /data/tinybird/;
-          echo 'Tinybird files copied successfully!';
+          echo 'Adapting schema for Tinybird Local (removing FORWARD_QUERY sections)...';
+          # Remove FORWARD_QUERY sections which only work in Tinybird Cloud
+          for file in /data/tinybird/datasources/*.datasource; do
+            if [ -f \"\$file\" ]; then
+              sed -i '/^FORWARD_QUERY/,\$d' \"\$file\";
+              # Remove trailing empty lines
+              sed -i -e :a -e '/^\s*\$/d;N;ba' \"\$file\";
+            fi
+          done;
+          echo 'Tinybird files adapted for Local mode!';
         else
           echo 'ERROR: Tinybird source directory not found';
           exit 1;
@@ -24,20 +33,17 @@ services:
     networks:
       - ghost_network
 
-  # Deploy Tinybird project to local instance
+  # Deploy Tinybird project to local instance using Tinybird Local's own tb CLI
   tinybird-deploy:
-    image: python:3.9-slim
+    image: tinybirdco/tinybird-local:latest
     profiles: ["setup"]
     volumes:
       - tinybird_files:/data/tinybird
-      - ./tb-home:/root/.tinybird
     environment:
       - TB_TOKEN=${TINYBIRD_ADMIN_TOKEN}
       - TB_HOST=http://tinybird-local:7181
     command: >
       sh -c "
-        apt-get update && apt-get install -y curl jq &&
-        pip install tinybird-cli &&
         cd /data/tinybird &&
         echo 'Getting admin token from Tinybird Local...' &&
         TOKEN=$$(curl -s http://tinybird-local:7181/tokens | jq -r .workspace_admin_token) &&
@@ -46,7 +52,7 @@ services:
           echo 'ERROR: Token is empty or null, cannot authenticate' &&
           exit 1;
         fi &&
-        echo 'Pushing Tinybird project...' &&
+        echo 'Pushing Tinybird project using Local tb CLI...' &&
         export TB_TOKEN=$$TOKEN &&
         export TB_HOST=http://tinybird-local:7181 &&
         tb push --force
